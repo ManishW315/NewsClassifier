@@ -1,7 +1,8 @@
-import os
-from pathlib import Path
 import logging
+import os
 from logging.handlers import RotatingFileHandler
+from pathlib import Path
+
 from rich.logging import RichHandler
 
 # Logs path
@@ -34,9 +35,7 @@ error_handler.setLevel(logging.ERROR)
 
 # Create formatters
 minimal_formatter = logging.Formatter(fmt="%(message)s")
-detailed_formatter = logging.Formatter(
-    fmt="%(levelname)s %(asctime)s [%(name)s:%(filename)s:%(funcName)s:%(lineno)d]\n%(message)s\n"
-)
+detailed_formatter = logging.Formatter(fmt="%(levelname)s %(asctime)s [%(name)s:%(filename)s:%(funcName)s:%(lineno)d]\n%(message)s\n")
 
 # Hook it all up
 console_handler.setFormatter(fmt=minimal_formatter)
