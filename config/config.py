@@ -16,6 +16,9 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
+
+
+
 # Create handlers
 console_handler = RichHandler(markup=True)
 console_handler.setLevel(logging.INFO)
