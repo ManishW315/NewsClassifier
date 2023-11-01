@@ -1,15 +1,17 @@
 import os
 import re
 from typing import Dict, Tuple
+from warnings import filterwarnings
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
 import torch
-from config.config import logger
-from newsclassifier.config import Cfg
+from newsclassifier.config.config import Cfg, logger
 from torch.utils.data import Dataset
 from transformers import RobertaTokenizer
+
+filterwarnings("ignore")
 
 
 def load_dataset(filepath: str, print_i: int = 0) -> pd.DataFrame:
@@ -63,7 +65,7 @@ def clean_text(text: str) -> str:
     return text
 
 
-def preprocess(df: pd.DataFrame) -> Tuple[pd.DataFrame, Dict, Dict]:
+def preprocess(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, Dict, Dict]:
     """Preprocess the data.
 
     Args:
@@ -175,4 +177,10 @@ def collate(inputs: Dict) -> Dict:
 
 
 if __name__ == "__main__":
-    df = load_dataset(Cfg.dataset_loc, 10)
+    df = load_dataset(Cfg.dataset_loc)
+    df, headlines_df, class_to_index, index_to_class = preprocess(df)
+    print(df)
+    print(class_to_index)
+    train_ds, val_ds = data_split(df, save_dfs=True)
+    dataset = NewsDataset(df)
+    print(dataset.__getitem__(0))
