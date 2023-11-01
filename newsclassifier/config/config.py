@@ -224,6 +224,8 @@ class Cfg:
 
     sweep_run = 10
 
+    index_to_class = {0: "Business", 1: "Entertainment", 2: "Health", 3: "Science", 4: "Sports", 5: "Technology", 6: "Worldwide"}
+
 
 # Create logs folder
 os.makedirs(Cfg.logs_path, exist_ok=True)

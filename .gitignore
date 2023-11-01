@@ -161,3 +161,6 @@ cython_debug/
 
 # make
 Makefile
+
+# artifacts
+artifacts/

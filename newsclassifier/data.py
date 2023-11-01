@@ -143,7 +143,7 @@ def prepare_input(tokenizer: RobertaTokenizer, text: str) -> Dict:
         inputs (dict): A dictionary containing the tokenized input with keys such as 'input_ids',
             'attention_mask', etc.
     """
-    logger("Tokenizing input text.")
+    logger.info("Tokenizing input text.")
     inputs = tokenizer.encode_plus(
         text,
         return_tensors=None,
