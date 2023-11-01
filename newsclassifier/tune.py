@@ -22,6 +22,7 @@ def tune_loop(config=None):
     # ====================================================
     # loader
     # ====================================================
+    logger.info("Starting Tuning.")
     with wandb.init(project="NewsClassifier", config=config):
         config = wandb.config
 
@@ -38,7 +39,7 @@ def tune_loop(config=None):
         # ====================================================
         # model
         # ====================================================
-        num_classes = 7
+        num_classes = Cfg.num_classes
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         model = CustomModel(num_classes=num_classes, dropout_pb=config.dropout_pb)
@@ -58,20 +59,21 @@ def tune_loop(config=None):
         # ====================================================
         wandb.watch(model, criterion, log="all", log_freq=10)
 
-        min_loss = np.inf
-
         for epoch in range(config.epochs):
-            start_time = time.time()
+            try:
+                start_time = time.time()
 
-            # Step
-            train_loss = train_step(train_loader, model, num_classes, criterion, optimizer, epoch)
-            val_loss, _, _ = eval_step(valid_loader, model, num_classes, criterion, epoch)
-            scheduler.step(val_loss)
+                # Step
+                train_loss = train_step(train_loader, model, num_classes, criterion, optimizer, epoch)
+                val_loss, _, _ = eval_step(valid_loader, model, num_classes, criterion, epoch)
+                scheduler.step(val_loss)
 
-            # scoring
-            elapsed = time.time() - start_time
-            wandb.log({"epoch": epoch + 1, "train_loss": train_loss, "val_loss": val_loss})
-            print(f"Epoch {epoch+1} - avg_train_loss: {train_loss:.4f}  avg_val_loss: {val_loss:.4f}  time: {elapsed:.0f}s")
+                # scoring
+                elapsed = time.time() - start_time
+                wandb.log({"epoch": epoch + 1, "train_loss": train_loss, "val_loss": val_loss})
+                print(f"Epoch {epoch+1} - avg_train_loss: {train_loss:.4f}  avg_val_loss: {val_loss:.4f}  time: {elapsed:.0f}s")
+            except Exception as e:
+                logger.error(f"Epoch {epoch+1}, {e}")
 
         torch.cuda.empty_cache()
         gc.collect()

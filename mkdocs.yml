@@ -1,0 +1,20 @@
+site_name: NewsClassifier Docs
+# site_url:
+repo_url: https://github.com/ManishW315/NewsClassifier
+nav:
+  - Home: index.md
+  - newsclassifier:
+    - config: newsclassifier\config.md
+    - data: newsclassifier\data.md
+    - models: newsclassifier\models.md
+    - train: newsclassifier\train.md
+    - tune: newsclassifier\tune.md
+    - inference: newsclassifier\inference.md
+    # - predict: newsclassifier/predict.md
+    # - serve: newsclassifier/serve.md
+    - utils: newsclassifier\utils.md
+theme: readthedocs
+plugins:
+  - mkdocstrings
+watch:
+  - .  # reload docs for any file changes

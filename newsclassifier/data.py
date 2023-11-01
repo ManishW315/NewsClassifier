@@ -41,9 +41,13 @@ def prepare_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
         df: new dataframe with appropriate features.
         headlines_df: dataframe cintaining "headlines" category instances.
     """
-    df = df[["Title", "Category"]]
-    df.rename(columns={"Title": "Text"}, inplace=True)
-    df, headlines_df = df[df["Category"] != "Headlines"].reset_index(drop=True), df[df["Category"] == "Headlines"].reset_index(drop=True)
+    logger.info("Preparing Data.")
+    try:
+        df = df[["Title", "Category"]]
+        df.rename(columns={"Title": "Text"}, inplace=True)
+        df, headlines_df = df[df["Category"] != "Headlines"].reset_index(drop=True), df[df["Category"] == "Headlines"].reset_index(drop=True)
+    except Exception as e:
+        logger.error(e)
 
     return df, headlines_df
 
@@ -51,6 +55,7 @@ def prepare_data(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
 def clean_text(text: str) -> str:
     """Clean text (lower, puntuations removal, blank space removal)."""
     # lower case the text
+    logger.info("Cleaning input text.")
     text = text.lower()  # necessary to do before as stopwords are in lower case
 
     # remove stopwords
@@ -79,13 +84,15 @@ def preprocess(df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, Dict, Dict
     df, headlines_df = prepare_data(df)
 
     cats = df["Category"].unique().tolist()
-    num_classes = len(cats)
     class_to_index = {tag: i for i, tag in enumerate(cats)}
     index_to_class = {v: k for k, v in class_to_index.items()}
 
     df["Text"] = df["Text"].apply(clean_text)  # clean text
     df = df[["Text", "Category"]]
-    df["Category"] = df["Category"].map(class_to_index)  # label encoding
+    try:
+        df["Category"] = df["Category"].map(class_to_index)  # label encoding
+    except Exception as e:
+        logger.error(e)
     return df, headlines_df, class_to_index, index_to_class
 
 
@@ -103,21 +110,24 @@ def data_split(df: pd.DataFrame, split_size: float = 0.2, stratify_on_target: bo
         train-test splits (with/without target setting)
     """
     logger.info("Splitting Data.")
-    if stratify_on_target:
-        stra = df["Category"]
-    else:
-        stra = None
+    try:
+        if stratify_on_target:
+            stra = df["Category"]
+        else:
+            stra = None
 
-    train, test = train_test_split(df, test_size=split_size, random_state=42, stratify=stra)
-    train_ds = pd.DataFrame(train, columns=df.columns)
-    test_ds = pd.DataFrame(test, columns=df.columns)
+        train, test = train_test_split(df, test_size=split_size, random_state=42, stratify=stra)
+        train_ds = pd.DataFrame(train, columns=df.columns)
+        test_ds = pd.DataFrame(test, columns=df.columns)
 
-    if save_dfs:
-        logger.info("Saving and storing data splits.")
+        if save_dfs:
+            logger.info("Saving and storing data splits.")
 
-        os.makedirs(Cfg.preprocessed_data_path, exist_ok=True)
-        train.to_csv(os.path.join(Cfg.preprocessed_data_path, "train.csv"))
-        test.to_csv(os.path.join(Cfg.preprocessed_data_path, "test.csv"))
+            os.makedirs(Cfg.preprocessed_data_path, exist_ok=True)
+            train.to_csv(os.path.join(Cfg.preprocessed_data_path, "train.csv"))
+            test.to_csv(os.path.join(Cfg.preprocessed_data_path, "test.csv"))
+    except Exception as e:
+        logger.error(e)
 
         return train_ds, test_ds
 
@@ -133,6 +143,7 @@ def prepare_input(tokenizer: RobertaTokenizer, text: str) -> Dict:
         inputs (dict): A dictionary containing the tokenized input with keys such as 'input_ids',
             'attention_mask', etc.
     """
+    logger("Tokenizing input text.")
     inputs = tokenizer.encode_plus(
         text,
         return_tensors=None,

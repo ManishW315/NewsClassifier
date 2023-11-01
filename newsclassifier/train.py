@@ -69,7 +69,7 @@ def train_loop(config=None):
 
     config = dict(
         batch_size=Cfg.batch_size,
-        num_classes=7,
+        num_classes=Cfg.num_classes,
         epochs=Cfg.epochs,
         dropout_pb=Cfg.dropout_pb,
         learning_rate=Cfg.lr,
@@ -84,6 +84,8 @@ def train_loop(config=None):
         ds, headlines_df, class_to_index, index_to_class = preprocess(df)
         train_ds, val_ds = data_split(ds, test_size=Cfg.test_size)
 
+        logger.info("Preparing Data.")
+
         train_dataset = NewsDataset(train_ds)
         valid_dataset = NewsDataset(val_ds)
 
@@ -93,6 +95,8 @@ def train_loop(config=None):
         # ====================================================
         # model
         # ====================================================
+
+        logger.info("Creating Custom Model.")
         num_classes = config.num_classes
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -114,26 +118,29 @@ def train_loop(config=None):
         wandb.watch(model, criterion, log="all", log_freq=10)
 
         min_loss = np.inf
-
+        logger.info("Staring Training Loop.")
         for epoch in range(config.epochs):
-            start_time = time.time()
+            try:
+                start_time = time.time()
 
-            # Step
-            train_loss = train_step(train_loader, model, num_classes, criterion, optimizer, epoch)
-            val_loss, _, _ = eval_step(valid_loader, model, num_classes, criterion, epoch)
-            scheduler.step(val_loss)
+                # Step
+                train_loss = train_step(train_loader, model, num_classes, criterion, optimizer, epoch)
+                val_loss, _, _ = eval_step(valid_loader, model, num_classes, criterion, epoch)
+                scheduler.step(val_loss)
 
-            # scoring
-            elapsed = time.time() - start_time
-            wandb.log({"epoch": epoch + 1, "train_loss": train_loss, "val_loss": val_loss})
-            print(f"Epoch {epoch+1} - avg_train_loss: {train_loss:.4f}  avg_val_loss: {val_loss:.4f}  time: {elapsed:.0f}s")
+                # scoring
+                elapsed = time.time() - start_time
+                wandb.log({"epoch": epoch + 1, "train_loss": train_loss, "val_loss": val_loss})
+                print(f"Epoch {epoch+1} - avg_train_loss: {train_loss:.4f}  avg_val_loss: {val_loss:.4f}  time: {elapsed:.0f}s")
 
-            if min_loss > val_loss:
-                min_loss = val_loss
-                print("Best Score : saving model.")
-                os.makedirs(Cfg.artifacts_path, exist_ok=True)
-                model.save(Cfg.artifacts_path)
-            print(f"\nSaved Best Model Score: {min_loss:.4f}\n\n")
+                if min_loss > val_loss:
+                    min_loss = val_loss
+                    print("Best Score : saving model.")
+                    os.makedirs(Cfg.artifacts_path, exist_ok=True)
+                    model.save(Cfg.artifacts_path)
+                print(f"\nSaved Best Model Score: {min_loss:.4f}\n\n")
+            except Exception as e:
+                logger.error(f"Epoch - {epoch+1}, {e}")
 
         wandb.save(os.path.join(Cfg.artifacts_path, "model.pt"))
         torch.cuda.empty_cache()

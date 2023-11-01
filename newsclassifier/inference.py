@@ -32,12 +32,20 @@ def test_step(test_loader: DataLoader, model) -> Tuple[np.ndarray, np.ndarray]:
 
 
 def inference():
-    test_dataset = NewsDataset(os.path.join(Cfg.preprocessed_data_path, "test.csv"))
-    test_loader = DataLoader(test_dataset, batch_size=Cfg.batch_size, shuffle=False, num_workers=4, pin_memory=True, drop_last=False)
+    logger.info("Loading inference data.")
+    try:
+        test_dataset = NewsDataset(os.path.join(Cfg.preprocessed_data_path, "test.csv"))
+        test_loader = DataLoader(test_dataset, batch_size=Cfg.batch_size, shuffle=False, num_workers=4, pin_memory=True, drop_last=False)
+    except Exception as e:
+        logger.error(e)
 
-    model = CustomModel(num_classes=Cfg.num_classes)
-    model.load_state_dict(torch.load(Cfg.model_path, map_location=torch.device("cpu")))
-    model.to(device)
+    logger.info("loading model.")
+    try:
+        model = CustomModel(num_classes=Cfg.num_classes)
+        model.load_state_dict(torch.load(Cfg.model_path, map_location=torch.device("cpu")))
+        model.to(device)
+    except Exception as e:
+        logger.error(e)
 
     y_true, y_pred = test_step(test_loader, model)
 
