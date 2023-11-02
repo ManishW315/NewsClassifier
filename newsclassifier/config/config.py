@@ -4,8 +4,6 @@ from dataclasses import dataclass
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-import nltk
-
 from rich.logging import RichHandler
 
 # from nltk.corpus import stopwords
