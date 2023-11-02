@@ -58,6 +58,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="newsclassifier/inference/">inference</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="newsclassifier/predict/">predict</a>
+                  </li>
                   <li class="toctree-l1"><a class="reference internal" href="newsclassifier/utils/">utils</a>
                   </li>
               </ul>
@@ -90,6 +92,7 @@
 <h2 id="project-layout">Project layout</h2>
 <pre>
 NewsClassifier
+│   app.py
 │
 ├───dataset
 │   ├───preprocessed
@@ -105,18 +108,16 @@ NewsClassifier
 │   │   train.py
 │   │   tune.py
 │   │   inference.py
+│   │   predict.py
 │   │   utils.py
-│   │
 │   │
 │   └───config
 │           config.py
 │           sweep_config.yaml
 │
-├───notebooks
-│       eda.ipynb
-│       newsclassifier-roberta-base-wandb-track-sweep.ipynb
-│
-└───test
+└───notebooks
+        eda.ipynb
+        newsclassifier-roberta-base-wandb-track-sweep.ipynb
 </pre>
               
             </div>
@@ -169,5 +170,5 @@ NewsClassifier
 
 <!--
 MkDocs version : 1.5.3
-Build Date UTC : 2023-11-01 12:22:39.593842+00:00
+Build Date UTC : 2023-11-02 18:56:32.756900+00:00
 -->
