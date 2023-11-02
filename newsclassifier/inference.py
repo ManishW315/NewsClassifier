@@ -31,7 +31,8 @@ def test_step(test_loader: DataLoader, model) -> Tuple[np.ndarray, np.ndarray]:
     return np.vstack(y_trues), np.vstack(y_preds)
 
 
-def inference():
+def inference() -> None:
+    """Do inference prediction."""
     logger.info("Loading inference data.")
     try:
         test_dataset = NewsDataset(os.path.join(Cfg.preprocessed_data_path, "test.csv"))

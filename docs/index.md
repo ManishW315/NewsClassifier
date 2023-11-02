@@ -5,6 +5,7 @@ For source visit [ManishW315/NewsClassifier](https://github.com/ManishW315/NewsC
 ## Project layout
 <pre>
 NewsClassifier
+│   app.py
 │
 ├───dataset
 │   ├───preprocessed
@@ -20,16 +21,14 @@ NewsClassifier
 │   │   train.py
 │   │   tune.py
 │   │   inference.py
+│   │   predict.py
 │   │   utils.py
-│   │
 │   │
 │   └───config
 │           config.py
 │           sweep_config.yaml
 │
-├───notebooks
-│       eda.ipynb
-│       newsclassifier-roberta-base-wandb-track-sweep.ipynb
-│
-└───test
+└───notebooks
+        eda.ipynb
+        newsclassifier-roberta-base-wandb-track-sweep.ipynb
 </pre>

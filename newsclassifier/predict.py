@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import numpy as np
 
@@ -9,7 +10,15 @@ from newsclassifier.models import CustomModel
 from transformers import RobertaTokenizer
 
 
-def predict(text: str):
+def predict(text: str) -> List:
+    """Do user input prediction.
+
+    Args:
+        text (str): User input in the form of string.
+
+    Returns:
+        List: Prediction probabilities of each class labels.
+    """
     tokenizer = RobertaTokenizer.from_pretrained("roberta-base")
     model = CustomModel(num_classes=7)
     model.load_state_dict(torch.load(os.path.join(Cfg.artifacts_path, "model.pt"), map_location=torch.device("cpu")))
