@@ -29,6 +29,7 @@ def predict(text: str) -> List:
     test_sample = dict(input_ids=input_ids, attention_mask=attention_masks)
 
     with torch.no_grad():
+        logger.info("Predicting labels.")
         y_pred_test_sample = model.predict_proba(test_sample)
         prediction = y_pred_test_sample[0]
 
