@@ -1,7 +1,7 @@
 # NewsClassifier
 
 ## Overview
-News Classifier project implemented by finetuning Roberta-base transform on a text classification task. The goal of this project is to classify news articles into predefined categories, such as sports, politics, technology, and entertainment.
+News Classifier project implemented by finetuning Roberta-base Transform on a text classification task. The goal of this project is to classify news articles into Business, Entertainment, Health, Science, Sports, Technology, and WorldWide categories.
 
 ## Table of Contents
 - [App](#app)
