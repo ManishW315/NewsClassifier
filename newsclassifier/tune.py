@@ -1,8 +1,5 @@
 import gc
 import time
-from typing import Tuple
-
-import numpy as np
 
 import torch
 import torch.nn as nn
@@ -19,6 +16,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def tune_loop(config=None):
+    """Tune loop."""
     # ====================================================
     # loader
     # ====================================================

@@ -20,7 +20,19 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def train_step(train_loader: DataLoader, model, num_classes: int, loss_fn, optimizer, epoch: int) -> float:
-    """Train step."""
+    """Train step.
+
+    Args:
+        train_loader (DataLoader): train set loader
+        model (_type_): model to be used.
+        num_classes (int): number of unique labels.
+        loss_fn (_type_): loss function.
+        optimizer (_type_): optimizer to be used.
+        epoch (int): running epoch number.
+
+    Returns:
+        float: loss
+    """
     model.train()
     loss = 0.0
     total_iterations = len(train_loader)
@@ -41,7 +53,18 @@ def train_step(train_loader: DataLoader, model, num_classes: int, loss_fn, optim
 
 
 def eval_step(val_loader: DataLoader, model, num_classes: int, loss_fn, epoch: int) -> Tuple[float, np.ndarray, np.ndarray]:
-    """Eval step."""
+    """Validation step.
+
+    Args:
+        val_loader (DataLoader): validation dataset loader
+        model (_type_): model to be used.
+        num_classes (int): number of unique labels.
+        loss_fn (_type_): loss function.
+        epoch (int): running epoch number.
+
+    Returns:
+        Tuple[float, np.ndarray, np.ndarray]: loss, ground truth labels, predictions
+    """
     model.eval()
     loss = 0.0
     total_iterations = len(val_loader)
@@ -62,11 +85,11 @@ def eval_step(val_loader: DataLoader, model, num_classes: int, loss_fn, epoch: i
     return loss, np.vstack(y_trues), np.vstack(y_preds)
 
 
-def train_loop(config=None):
+def train_loop():
+    """Training loop."""
     # ====================================================
     # loader
     # ====================================================
-
     config = dict(
         batch_size=Cfg.batch_size,
         num_classes=Cfg.num_classes,

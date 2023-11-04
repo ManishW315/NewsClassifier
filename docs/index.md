@@ -1,34 +1,12 @@
-# Welcome to NewsClassifier Docs
+# Welcome to NewsClassifier Documentation
 
-For source visit [ManishW315/NewsClassifier](https://github.com/ManishW315/NewsClassifier).
+This documentation provides information about various aspects of your project. Use the navigation links below to explore different sections:
 
-## Project layout
-<pre>
-NewsClassifier
-│   app.py
-│
-├───dataset
-│   ├───preprocessed
-│   │       test.csv
-│   │       train.csv
-│   │
-│   └───raw
-│           news_dataset.csv
-│
-├───newsclassifier
-│   │   data.py
-│   │   models.py
-│   │   train.py
-│   │   tune.py
-│   │   inference.py
-│   │   predict.py
-│   │   utils.py
-│   │
-│   └───config
-│           config.py
-│           sweep_config.yaml
-│
-└───notebooks
-        eda.ipynb
-        newsclassifier-roberta-base-wandb-track-sweep.ipynb
-</pre>
+- [Configuration](newsclassifier\config.md): Learn about project configuration and settings.
+- [Data](newsclassifier\data.md): Understand how data is processed and used in your project.
+- [Models](newsclassifier\models.md): Explore the deep learning model and transformer architecture and customization.
+- [Training](newsclassifier\train.md): Discover how to train your model with specified hyperparameters.
+- [Hyperparameter Tuning](newsclassifier\tune.md): Optimize model performance through hyperparameter tuning with WandB Sweeps.
+- [Inference](newsclassifier\inference.md): Learn how to make predictions using the trained model.
+- [Prediction](newsclassifier\predict.md): Get insights into using the model for predictions and analysis.
+- [Utilities](newsclassifier\utils.md): Explore utility scripts and tools used in your project.

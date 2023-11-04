@@ -1,8 +1,6 @@
 import os
 from typing import List
 
-import numpy as np
-
 import torch
 from newsclassifier.config.config import Cfg, logger
 from newsclassifier.data import clean_text, prepare_input
@@ -11,7 +9,7 @@ from transformers import RobertaTokenizer
 
 
 def predict(text: str) -> List:
-    """Do user input prediction.
+    """Predict target for user input.
 
     Args:
         text (str): User input in the form of string.
@@ -22,7 +20,6 @@ def predict(text: str) -> List:
     tokenizer = RobertaTokenizer.from_pretrained("roberta-base")
     model = CustomModel(num_classes=7)
     model.load_state_dict(torch.load(os.path.join(Cfg.artifacts_path, "model.pt"), map_location=torch.device("cpu")))
-    index_to_class = Cfg.index_to_class
     sample_input = prepare_input(tokenizer, text)
     input_ids = torch.unsqueeze(sample_input["input_ids"], 0).to("cpu")
     attention_masks = torch.unsqueeze(sample_input["attention_mask"], 0).to("cpu")

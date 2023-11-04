@@ -9,6 +9,8 @@ from transformers import RobertaModel
 
 
 class CustomModel(nn.Module):
+    """Custom model."""
+
     def __init__(self, num_classes, change_config=False, dropout_pb=0.0):
         super(CustomModel, self).__init__()
         if change_config:

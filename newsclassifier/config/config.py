@@ -12,6 +12,8 @@ from rich.logging import RichHandler
 
 @dataclass
 class Cfg:
+    """Configurations."""
+
     STOPWORDS = [
         "i",
         "me",

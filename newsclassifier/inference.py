@@ -16,7 +16,15 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def test_step(test_loader: DataLoader, model) -> Tuple[np.ndarray, np.ndarray]:
-    """Eval step."""
+    """Test Step.
+
+    Args:
+        test_loader (DataLoader): Test dataset loader.
+        model (_type_): model to be used for inference
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: ground truth labels with predictions.
+    """
     model.eval()
     y_trues, y_preds = [], []
     with torch.inference_mode():
