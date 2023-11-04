@@ -1,30 +1,36 @@
----
-title: News-Classifier
-app_file: app.py
-sdk: gradio
-sdk_version: 4.0.2
----
 # NewsClassifier
 
 ## Overview
-News Classifier project implemented finetuning Roberta-base transform on a text classification task. The goal of this project is to classify news articles into predefined categories, such as sports, politics, technology, and entertainment.
+News Classifier project implemented by finetuning Roberta-base transform on a text classification task. The goal of this project is to classify news articles into predefined categories, such as sports, politics, technology, and entertainment.
 
 ## Table of Contents
-- [Overview](#overview)
+- [App](#app)
+- [Docs](#docs)
 - [Project Structure](#project-structure)
 - [Dataset](#dataset)
 - [Setup](#setup)
-- [Data Preprocessing](#data-preprocessing)
-- [Model Architecture](#model-architecture)
-- [Training](README.md#training)
+- [Training](#training)
 - [Tune](#tune)
 - [Inference](#inference)
-- [Results](#results)
+
+## App
+**The app is created using Gradio and deployed on [Hugging Face Spaces](https://huggingface.co/spaces/ManishW/News-Classifier)**
+
+| title Value | app_file | sdk | sdk_version |
+| ---| ---| ---| ---|
+| News-Classifier | app.py | gradio | 4.0.2 |
+
+
+
+## Docs
+**See docs for here: [NewsClassifier Docs](https://ManishW315.github.io/NewsClassifier/)**
+
+---
 
 ## Project Structure
 The project is organized as follows:
 
-Displaying only the core project files.
+*Core project files:*
 
 <pre>
 NewsClassifier
@@ -78,16 +84,6 @@ To set up the project environment, follow these steps:
   pip install -r requirements.txt
 ```
 
-4. Customize the config.yml file to set hyperparameters, data paths, and other configuration options.
-
-See docs here: [NewsClassifier Docs](https://ManishW315.github.io/NewsClassifier/)
-
-## Data Preprocessing
-Data preprocessing is essential for preparing the dataset for training. You can use the provided Jupyter notebooks (`data_preprocessing.ipynb`) or the Python scripts in the `src/` directory for data preprocessing.
-
-## Model Architecture
-The deep learning model architecture is defined in `src/model.py`.
-
 ## Training
 To train the model, run the following command:
 
@@ -96,16 +92,17 @@ python newsclassifier/train.py
 ```
 This script will train the model using the specified hyperparameters and save the trained model checkpoints in the models/ directory.
 
+**We can change the training parameters in ``config.py``**
+
 ## Tune
-To perform hyperparameter tuning, run the following command. The hyperparameter search range can be changed:
+To perform hyperparameter tuning, run the following command:
 
 ```bash
 python newsclassifier/tune.py
 ```
 This script will provide evaluation metrics such as accuracy, precision, recall, and F1-score on a test dataset.
 
-## Inference
-You can use the trained model for inference by loading it and making predictions on new news articles. Example code for inference can be found in the provided Jupyter notebooks or in the evaluate.py script.
+**The hyperparameter search range can be changed in ``sweep_config.yaml``.**
 
-## Results
-Share the results and insights obtained from the trained model, including accuracy, loss curves, and any additional observations.
+## Inference
+You can use the trained model for inference by loading it and making predictions on new news articles. Example code for inference can be found in the provided Jupyter notebooks.
