@@ -106,6 +106,149 @@
 
 
 
+<div class="doc doc-object doc-function">
+
+
+
+
+<h2 id="newsclassifier.tune.tune_loop" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">tune_loop</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+</h2>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Tune loop.</p>
+
+          <details class="quote">
+            <summary> <code>newsclassifier\tune.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">tune_loop</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tune loop.&quot;&quot;&quot;</span>
+    <span class="c1"># ====================================================</span>
+    <span class="c1"># loader</span>
+    <span class="c1"># ====================================================</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Tuning.&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">wandb</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="s2">&quot;NewsClassifier&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">config</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="n">Cfg</span><span class="o">.</span><span class="n">dataset_loc</span><span class="p">)</span>
+        <span class="n">ds</span><span class="p">,</span> <span class="n">headlines_df</span><span class="p">,</span> <span class="n">class_to_index</span><span class="p">,</span> <span class="n">index_to_class</span> <span class="o">=</span> <span class="n">preprocess</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="n">train_ds</span><span class="p">,</span> <span class="n">val_ds</span> <span class="o">=</span> <span class="n">data_split</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">Cfg</span><span class="o">.</span><span class="n">test_size</span><span class="p">)</span>
+
+        <span class="n">train_dataset</span> <span class="o">=</span> <span class="n">NewsDataset</span><span class="p">(</span><span class="n">train_ds</span><span class="p">)</span>
+        <span class="n">valid_dataset</span> <span class="o">=</span> <span class="n">NewsDataset</span><span class="p">(</span><span class="n">val_ds</span><span class="p">)</span>
+
+        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop_last</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">valid_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">valid_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># ====================================================</span>
+        <span class="c1"># model</span>
+        <span class="c1"># ====================================================</span>
+        <span class="n">num_classes</span> <span class="o">=</span> <span class="n">Cfg</span><span class="o">.</span><span class="n">num_classes</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+
+        <span class="n">model</span> <span class="o">=</span> <span class="n">CustomModel</span><span class="p">(</span><span class="n">num_classes</span><span class="o">=</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">dropout_pb</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dropout_pb</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="c1"># ====================================================</span>
+        <span class="c1"># Training components</span>
+        <span class="c1"># ====================================================</span>
+        <span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">()</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">)</span>
+        <span class="n">scheduler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">ReduceLROnPlateau</span><span class="p">(</span>
+            <span class="n">optimizer</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">lr_reduce_factor</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">lr_reduce_patience</span>
+        <span class="p">)</span>
+
+        <span class="c1"># ====================================================</span>
+        <span class="c1"># loop</span>
+        <span class="c1"># ====================================================</span>
+        <span class="n">wandb</span><span class="o">.</span><span class="n">watch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">log_freq</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">epochs</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+                <span class="c1"># Step</span>
+                <span class="n">train_loss</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="n">train_loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+                <span class="n">val_loss</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">eval_step</span><span class="p">(</span><span class="n">valid_loader</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+                <span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">val_loss</span><span class="p">)</span>
+
+                <span class="c1"># scoring</span>
+                <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+                <span class="n">wandb</span><span class="o">.</span><span class="n">log</span><span class="p">({</span><span class="s2">&quot;epoch&quot;</span><span class="p">:</span> <span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;train_loss&quot;</span><span class="p">:</span> <span class="n">train_loss</span><span class="p">,</span> <span class="s2">&quot;val_loss&quot;</span><span class="p">:</span> <span class="n">val_loss</span><span class="p">})</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2"> - avg_train_loss: </span><span class="si">{</span><span class="n">train_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  avg_val_loss: </span><span class="si">{</span><span class="n">val_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  time: </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">empty_cache</span><span class="p">()</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
 
   </div>
 
